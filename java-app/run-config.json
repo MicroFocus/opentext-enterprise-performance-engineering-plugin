@@ -1,0 +1,21 @@
+{
+  "lre_action": "ExecuteLreTest",
+  "lre_description": "Local IntelliJ run",
+  "lre_server": "<lre_server>/?tenant=fa128c06-5436-413d-9cfa-9f04bb738df3",
+  "lre_https_protocol": false,
+  "lre_authenticate_with_token": false,
+  "lre_domain": "<domain>",
+  "lre_project": "<project>",
+  "lre_test": "<testid>",
+  "lre_test_instance": "",
+  "lre_timeslot_duration_hours": "0",
+  "lre_timeslot_duration_minutes": "30",
+  "lre_post_run_action": "Collate and Analyze",
+  "lre_vuds_mode": false,
+  "lre_trend_report": "5",
+  "lre_search_timeslot": false,
+  "lre_status_by_sla": false,
+  "lre_output_dir": "C:/temp/harness/output",
+  "lre_workspace_dir": "C:/temp/harness/workspace",
+  "lre_enable_stacktrace": false
+}

@@ -1,0 +1,61 @@
+# ------------------------
+# Node.js
+# ------------------------
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ------------------------
+# Java / Maven
+# ------------------------
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.log
+
+# ------------------------
+# Python
+# ------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+*.venv
+.env
+
+# ------------------------
+# Docker
+# ------------------------
+docker-compose.override.yml
+*.dockerignore
+
+# ------------------------
+# IDE / Editor
+# ------------------------
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.DS_Store
+
+# ------------------------
+# OS
+# ------------------------
+Thumbs.db
+ehthumbs.db
+.DS_Store
+
+# ------------------------
+# Temporary / Output folders
+# ------------------------
+C:/temp/harness/output/
+C:/temp/harness/workspace/
