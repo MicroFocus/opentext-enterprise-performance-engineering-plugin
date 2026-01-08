@@ -235,7 +235,12 @@ const triggerJavaJarApp = (configFilePath: string) => {
     const jarFilePath = path.resolve(__dirname, 'lre-actions-1.1-SNAPSHOT-jar-with-dependencies.jar');
 
     const javaAppCommand = 'java';
-    const javaAppArgs = ['-jar', jarFilePath, configFilePath];
+    const javaAppArgs = [
+        '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager',
+        '-jar',
+        jarFilePath,
+        configFilePath
+    ];
 
     const workingDirectory = __dirname;
 
