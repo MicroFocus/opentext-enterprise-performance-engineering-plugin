@@ -157,6 +157,7 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           else
             echo "changed=false" >> $GITHUB_OUTPUT
+          fi
 
       # -------------------------------------------------
       # 11. Push Docker image to Docker Hub (only if release/ changed)
