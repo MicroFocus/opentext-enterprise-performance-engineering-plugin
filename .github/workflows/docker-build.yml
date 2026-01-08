@@ -15,17 +15,23 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
 
     steps:
-      # 1. Checkout repo
+      # -------------------------------------------------
+      # 1. Checkout repository
+      # -------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Set up Python (for running test script)
+      # -------------------------------------------------
+      # 2. Set up Python (for test script)
+      # -------------------------------------------------
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
+      # -------------------------------------------------
       # 3. Set up Docker
+      # -------------------------------------------------
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -73,37 +79,43 @@ jobs:
           path: artifacts/node
 
       # -------------------------------------------------
-      # 7. Build final Docker image
+      # 7. Build final Docker image (tagged)
       # -------------------------------------------------
       - name: Build Docker image
         run: |
-          docker build -t $IMAGE_NAME:latest .
+          docker build \
+            -t $IMAGE_NAME:latest \
+            -t $IMAGE_NAME:$IMAGE_TAG \
+            .
 
       # -------------------------------------------------
       # 8. Test Docker image
       # -------------------------------------------------
       - name: Test Docker image
         env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
           PLUGIN_LRE_ACTION: ExecuteLreTest
           PLUGIN_LRE_DESCRIPTION: running test in GitHub Actions
           PLUGIN_LRE_SERVER: ${{ secrets.LRE_SERVER }}
-          PLUGIN_LRE_HTTPS_PROTOCOL: true
-          PLUGIN_LRE_AUTHENTICATE_WITH_TOKEN: false
+          PLUGIN_LRE_HTTPS_PROTOCOL: "true"
+          PLUGIN_LRE_AUTHENTICATE_WITH_TOKEN: "false"
           PLUGIN_LRE_USERNAME: ${{ secrets.LRE_USERNAME }}
           PLUGIN_LRE_PASSWORD: ${{ secrets.LRE_PASSWORD }}
           PLUGIN_LRE_DOMAIN: ${{ secrets.LRE_DOMAIN }}
           PLUGIN_LRE_PROJECT: ${{ secrets.LRE_PROJECT }}
           PLUGIN_LRE_TEST: ${{ secrets.LRE_TEST }}
-          PLUGIN_LRE_TIMESLOT_DURATION_HOURS: 0
-          PLUGIN_LRE_TIMESLOT_DURATION_MINUTES: 30
+          PLUGIN_LRE_TIMESLOT_DURATION_HOURS: "0"
+          PLUGIN_LRE_TIMESLOT_DURATION_MINUTES: "30"
           PLUGIN_LRE_POST_RUN_ACTION: Collate and Analyze
-          PLUGIN_LRE_VUDS_MODE: false
-          PLUGIN_LRE_TREND_REPORT: 5
-          PLUGIN_LRE_SEARCH_TIMESLOT: false
-          PLUGIN_LRE_STATUS_BY_SLA: false
+          PLUGIN_LRE_VUDS_MODE: "false"
+          PLUGIN_LRE_TREND_REPORT: "5"
+          PLUGIN_LRE_SEARCH_TIMESLOT: "false"
+          PLUGIN_LRE_STATUS_BY_SLA: "false"
           PLUGIN_LRE_OUTPUT_DIR: /harness/output
           PLUGIN_LRE_WORKSPACE_DIR: /harness/workspace
-          PLUGIN_LRE_ENABLE_STACKTRACE: true
+          PLUGIN_LRE_ENABLE_STACKTRACE: "true"
+
         run: |
           mkdir -p harness/output harness/workspace
           python testImage.py

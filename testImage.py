@@ -5,9 +5,7 @@ from pathlib import Path
 # -----------------------------
 # Docker image metadata
 # -----------------------------
-image_base = "lre-harness-node-java-app"
-image_version = "1.0"
-image_name = f"{image_base}:{image_version}"
+image_name = os.getenv("IMAGE_NAME", "lre-harness-node-java-app:latest")
 
 # -----------------------------
 # Environment variables
