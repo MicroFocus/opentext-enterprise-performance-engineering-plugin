@@ -147,12 +147,16 @@ jobs:
         if: success()   # only run if previous steps succeeded
         id: release_changed
         run: |
+          # Make sure we have at least 2 commits for diff
           git fetch --depth=2
-          if git diff --name-only $GITHUB_SHA $GITHUB_SHA^ | grep -q '^release/'; then
+          
+          # Check if any files under release/ changed
+          CHANGED=$(git diff --name-only $GITHUB_SHA $GITHUB_SHA^ | grep '^release/' || true)
+          
+          if [ -n "$CHANGED" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
           else
             echo "changed=false" >> $GITHUB_OUTPUT
-          fi
 
       # -------------------------------------------------
       # 11. Push Docker image to Docker Hub (only if release/ changed)
