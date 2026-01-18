@@ -85,7 +85,15 @@ jobs:
           path: artifacts/node
 
       # -------------------------------------------------
-      # 7. Build final Docker image (tagged)
+      # 7. Read release version
+      # -------------------------------------------------
+      - name: Read release version
+        run: |
+          IMAGE_TAG=$(cat release/trigger | tr -d '\n')
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+    
+      # -------------------------------------------------
+      # 8. Build final Docker image (tagged)
       # -------------------------------------------------
       - name: Build Docker image
         if: success()   # only run if previous steps succeeded
@@ -96,7 +104,7 @@ jobs:
             .
 
       # -------------------------------------------------
-      # 8. Test Docker image
+      # 9. Test Docker image
       # -------------------------------------------------
       - name: Test Docker image
         if: success()   # only run if previous steps succeeded
@@ -129,7 +137,7 @@ jobs:
           python testImage.py
 
       # -------------------------------------------------
-      # 9. Upload test outputs (reports)
+      # 10. Upload test outputs (reports)
       # -------------------------------------------------
       - name: Upload test reports
         if: success()   # only run if previous steps succeeded
@@ -141,26 +149,28 @@ jobs:
             harness/workspace
 
       # -------------------------------------------------
-      # 10. Check if release/ changed
+      # 11. Check if release version changed
       # -------------------------------------------------
-      - name: Check if release/ changed
-        if: success()   # only run if previous steps succeeded
+      - name: Check if release version changed
         id: release_changed
         run: |
-          # Make sure we have at least 2 commits for diff
-          git fetch --depth=2
-          
-          # Check if any files under release/ changed
-          CHANGED=$(git diff --name-only $GITHUB_SHA $GITHUB_SHA^ | grep '^release/' || true)
-          
-          if [ -n "$CHANGED" ]; then
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.sha }}"
+
+          # Handle first commit edge case
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
-          else
+            exit 0
+          fi
+
+          if git diff --quiet "$BEFORE" "$AFTER" -- release/trigger; then
             echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
       # -------------------------------------------------
-      # 11. Push Docker image to Docker Hub (only if release/ changed)
+      # 12. Push Docker image to Docker Hub (only if release/ changed)
       # -------------------------------------------------
       - name: Log in to Docker Hub
         if: ${{ steps.release_changed.outputs.changed == 'true' }}
